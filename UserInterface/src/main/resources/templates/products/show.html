@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: header"></head>
+    <body>
+        <div th:replace="fragments :: navbar"></div>
+
+        <div class="container">
+            <div class="container mt-5 mb-5">
+                <div class="card shadow">
+                    <div class="row g-0">
+                        <div class="col-md-6 border-end">
+                            <div class="d-flex flex-column justify-content-center">
+                                <div class="main_image">
+                                    <div th:if="${product.images}">
+                                        <div th:each="productImage : ${product.getImages()}">
+                                            <img th:src="${productImage.getImageUrl()}" alt="ProductImage" src="" th:width="300" th:height="300">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 right-side">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 th:text="${product.productName}"></h3>
+                                </div>
+                                <div class="mt-2 pr-3 content">
+                                    <p th:text="${product.description}"></p>
+                                </div>
+                                <h3  th:text="${product.price}">Rs.</h3>
+                                <br>
+                                <div class="buttons d-flex flex-row mt-5 gap-3">
+                                    <a th:href="@{/products/{id}/edit(id = ${product.id})}" class="btn btn-sm btn-outline-dark">Edit</a>
+                                    <form th:action="@{/products/{id}(id = ${product.id})}" th:method="delete">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/products/{id}/add-to-cart(id = ${product.id})}" th:object="${cartItem}" th:method="post">
+                                        <input type="hidden" th:value="${productId}" name="productId">
+                                        <label>
+                                            Quantity: <input name="quantity" type="number" th:field="*{quantity}" />
+                                        </label>
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            Add to Basket
+                                        </button>
+                                    </form>
+<!--                                    <a th:method="delete" th:href="@{/products/{id}(id = ${product.id})}" class="btn btn-sm btn-outline-dark">Delete</a>-->
+<!--                                    <%# <%= link_to 'Add to Basket', add_to_cart_path(@product.id),remote: true, class: "btn btn-sm btn-outline-dark", method: :post unless @cart.include?(@product) && policy(@product). %>-->
+<!--                                    <%= link_to 'Remove from Basket',  remove_from_cart_path(@product),remote: true, class: "btn btn-sm btn-outline-dark" , method: :delete if @cart.include?(@product) %>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div th:each="comment : ${product.getComments()}">
+                <div class="card mb-4 shadow">
+                    <div class="card-body">
+                        <p th:text="${comment.body}"></p>
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex flex-row align-items-center">
+    <!--                            <% if current_user.image.attached? %>-->
+    <!--                            <%= image_tag(comment.user.image, size: 25) %>-->
+    <!--                            <% end %>-->
+    <!--                            <p class="small mb-0 ms-2"><%= comment.user.name %></p>-->
+    <!--                            <%= link_to 'Edit', edit_comment_path(comment), class: "btn btn-warning btn-small m-2", remote: true if policy(comment).update? %>-->
+    <!--                            <div id="edit-comment" class="d-none">-->
+    <!--                            </div>-->
+                                <form th:action="@{/products/{productId}/comments/{id}(id = ${comment.id}, productId = ${product.id})}" th:method="delete">
+<!--                                    <input type="hidden" th:field="${comment.id}" th:value="${comment.id}" />-->
+                                    <button type="submit" class="btn btn-sm danger">
+                                        Delete
+                                    </button>
+                                </form>
+    <!--                            <%= link_to 'Delete', comment, class: "btn btn-danger btn-small m-2" ,-->
+    <!--                            method: :delete,-->
+    <!--                            data: { confirm: 'Are you sure?'} if policy(comment).destroy? %>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form th:action="@{/products/{productId}(productId = ${productId})}" th:object="${newComment}" method="post">
+                <label>
+                    <input name="body" type="text" th:field="*{body}" />
+                </label>
+                <label>
+                    <input type="submit" value="submit"/>
+                </label>
+            </form>
+<!--            <%= form_with model: model_type do |form| %>-->
+<!--            <p>-->
+<!--                <%= form.label :body %><br>-->
+<!--                <%= form.text_area :body, required: true %>-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                <%= form.submit %>-->
+<!--            </p>-->
+<!--            <% end %>-->
+        </div>
+
+<!--        <%= render @product.comments %>-->
+<!--        <%= render 'comments/form', comment: @comment, model_type: [@product, @product.comments.build], url: product_comments_path(@product, @comment) if policy(@product).comment? && user_signed_in? %>-->
+
+<!--        <%= link_to 'Back', root_path, class: "btn btn-sm btn-outline-dark" %>-->
+
+<!--        <div class="container mt-5">-->
+<!--            <h3 th:text="${restaurant.name}"></h3>-->
+<!--            <p class="fw-light" th:text="${restaurant.address}"></p>-->
+<!--            <a th:href="@{/restaurants/{id}/categories/new((id = ${restaurant.id}))}" class="btn btn-sm btn-success px-4">-->
+<!--                Create New Category-->
+<!--            </a>-->
+<!--            <ul class="category-list">-->
+<!--                <li class="m-3">-->
+<!--                    <a href="#" class="px-3 py-1 text-decoration-none btn btn-outline-dark">All</a>-->
+<!--                </li>-->
+<!--                <li th:each="category: ${restaurant.categories}" class="m-3">-->
+<!--                    <a class="px-3 py-1 text-decoration-none btn btn-outline-dark" th:text="${category.name}"></a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--            <div class="card" style="width: 18rem;" th:each="item: ${restaurant.items}">-->
+<!--                <img src="..." class="card-img-top" alt="...">-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title" th:text="${item.title}"></h5>-->
+<!--                    <p class="card-text" th:text="${item.description}"></p>-->
+<!--                    <a href="#" class="btn btn-primary">Go somewhere</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </body>
+</html>

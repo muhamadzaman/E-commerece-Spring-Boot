@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: header"></head>
+    <body>
+        <div th:replace="fragments :: navbar"></div>
+        <div class="container">
+            <h1>Add Product</h1>
+            <form th:action="@{/users/{userId}/products(userId = ${userId})}" th:object="${product}" method="post" enctype="multipart/form-data">
+
+                  <label>
+                    Name: <input name="productName" type="text" th:field="*{productName}" />
+                  </label>
+
+                  <label>
+                    Description: <input name="description" type="text" th:field="*{description}" />
+                  </label>
+
+                  <label>
+                    Quantity: <input  name="availableQuantity" type="number" th:field="*{availableQuantity}" min= 1 />
+                  </label>
+
+                  <label>
+                    Price: <input  name="price" type="number" th:field="*{price}" min= 1 />
+                  </label>
+
+                  <label>
+                    Images: <input type="file" name="imageFiles" multiple/>
+                  </label>
+
+                <label>
+                  <input type="submit" value="submit"/>
+                </label>
+            </form>
+        </div>
+    </body>
+</html>
